@@ -15,6 +15,7 @@ const createEmployee = async (req, res) => {
 // Get all employees
 const getAllEmployees = async (req, res) => {
     try {
+        res.send('all memnet')
         // TODO: Add logic to fetch all employees
     } catch (error) {
         console.error("❌ Error in getAllEmployees:", error.message);

@@ -118,8 +118,6 @@ const loginUser = async function(req, res) {
 // Loogout Controller
 const logoutUser = async function(req, res) {
     try{
-        console.log('logout route successfully')
-        
         await User.findByIdAndUpdate(
             req.user._id,
             { 
@@ -143,4 +141,27 @@ const logoutUser = async function(req, res) {
     }
 }
 
-export { registerUser, loginUser, logoutUser }
+// Rotate Tokens
+const rotateToken = async function(req, res) {
+    try{
+        // Generating tokens
+        const { accessToken, refreshToken } = await generateTokens(req.user._id)
+
+        // Cookies
+        const options = {
+            httpOnly: true,
+            secure: process.env.COOKIE_SECURE === 'true'
+        }
+        res.status(201)
+        .cookie('accessToken', accessToken, options)
+        .cookie("refreshToken", refreshToken, options)
+        .json({ message: "Token rotation successfull."})
+
+    } catch (error) {
+        console.log(error.message)
+        return res.status(404).json({message: "Token rotation unsuccessfull!"})
+    }
+}
+
+
+export { registerUser, loginUser, logoutUser, rotateToken }

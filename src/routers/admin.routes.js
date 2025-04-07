@@ -1,17 +1,19 @@
 import express from "express";
 import { createEmployee, getAllEmployees, getEmployeeById, updateEmployee, deleteEmployee, exportEmployee } from "../controllers/admin.controller.js"
+import verifyAccess from "../middleware/verifyAccess.middleware.js";
+import verifyAdmin from "../middleware/admin.middleware.js";
 
 const router = express.Router()
 
 //  CRUD Operations for both Admin & Employees
-router.get('/employees', getAllEmployees)   
-router.get('/employees/:id', getEmployeeById)   
+router.get('/', getAllEmployees)   
+router.get('/:id', getEmployeeById)   
 
 //  Admin Operations
-router.post('/employees', createEmployee)  
-router.put('/employees/:id', updateEmployee)  
-router.delete('/employees/:id', deleteEmployee)  
-router.get('/employees/export', exportEmployee)  
+router.post('/', verifyAccess, verifyAdmin, createEmployee)  
+router.put('/:id', verifyAccess, verifyAdmin, updateEmployee)  
+router.delete('/:id', verifyAccess, verifyAdmin, deleteEmployee)  
+router.get('/export', verifyAccess, verifyAdmin, exportEmployee)  
 
 export default router;
 

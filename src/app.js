@@ -23,6 +23,6 @@ import adminRouter from "./routers/admin.routes.js"
 
 // Routers Declear
 app.use('/auth', authRouter)
-app.use('/', adminRouter)
+app.use('/employees', adminRouter)
 
 export default app;

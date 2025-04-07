@@ -7,7 +7,7 @@ export default async(req, res, next) => {
         const token = req.cookies.refreshToken
 
         if (!token) {
-            return res.status(404).json({message: "Token not found."})
+            return res.status(404).json({message: "Refresh Token not found."})
         }
 
         // Checking if Token is valid.
@@ -16,7 +16,7 @@ export default async(req, res, next) => {
         const user = await User.findById( payload._id )
 
         if ( user.refreshToken !== token ) {
-            return res.status(404).json({message: "Expired Token!"})
+            return res.status(404).json({message: "Expired Refresh Token!"})
         }
         // If matched passing the user to the next middleware.
         req.user = user
@@ -24,6 +24,6 @@ export default async(req, res, next) => {
 
     } catch (error) {
         console.log(`Error: ${error.message}`)
-       return res.status(500).json({error: "Token validation failed."})
+       return res.status(500).json({error: "Refresh Token validation failed."})
     }
 }
