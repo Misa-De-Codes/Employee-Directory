@@ -1,13 +1,43 @@
-//  import { Employee } from "../models/employee.model.js"
+import { Employee } from "../models/employee.model.js"
 
 // Create a new employee
 const createEmployee = async (req, res) => {
     try {
-        console.log('create')
-        return res.send('hellow user created.')
-        // TODO: Add logic to create a new employee
+        const { employeeID, fullName, email, phoneNumber, department, position, joiningDate } = req.body
+
+        if(req.body == {} ) {
+            return res.status(404).json({error: "Please fill the details."})
+        }
+
+        // validate inputs
+        if(!employeeID || !fullName || !email || !phoneNumber || !department || !position || !joiningDate) {
+            return res.status(400).json({ error: "All fields are required!" })
+        }
+        
+        // checking if user already exists
+        const isEmployee = await Employee.findOne({
+            $or: [{ email, phoneNumber }]
+        })
+        if (isEmployee) {
+            return res.status(409).json({error: "Employee already exists!"})
+        }
+
+        // Creating new user
+        await Employee.create({
+            employeeID: employeeID,
+            fullName: fullName,
+            email: email,
+            phoneNumber: phoneNumber,
+            department: department,
+            position: position,
+            joiningDate: joiningDate
+          });
+
+        return res.send('New Employee added.')
+        
     } catch (error) {
-        console.error("❌ Error in createEmployee:", error.message);
+        console.error("name:", error.name);
+        console.error("message:", error.message);
         res.status(500).json({ message: "Server error while creating employee." });
     }
 };
@@ -15,10 +45,12 @@ const createEmployee = async (req, res) => {
 // Get all employees
 const getAllEmployees = async (req, res) => {
     try {
-        res.send('all memnet')
-        // TODO: Add logic to fetch all employees
+        const employees = await Employee.find({}) 
+
+        res.status(202).json({ message: "these are the employes", data: employees })
+
     } catch (error) {
-        console.error("❌ Error in getAllEmployees:", error.message);
+        console.error(error.message, "name: ", error.name);
         res.status(500).json({ message: "Server error while retrieving employees." });
     }
 };
@@ -26,6 +58,11 @@ const getAllEmployees = async (req, res) => {
 // Get a specific employee by ID
 const getEmployeeById = async (req, res) => {
     try {
+        const employees = await Employee.find({}) 
+
+        res.status(200).json({ message: "these are the employes", data: employees })
+
+
         // TODO: Add logic to fetch one employee by ID
     } catch (error) {
         console.error("❌ Error in getEmployeeById:", error.message);

@@ -17,11 +17,12 @@ const employeeSchema = new mongoose.Schema({
         trim: true,
         lowercase: true,
         unique: true,
-        match: [/.+@.+\..+/, 'Please enter a valid email']
+        match: [/^\S+@\S+\.\S+$/, 'Please enter a valid email']
     },
     phoneNumber: {
         type: String,
-        required: true
+        required: true,
+        match: [/^\+?\d{10,15}$/, 'Please enter a valid phone number']
     },
     department: {
         type: String,

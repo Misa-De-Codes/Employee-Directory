@@ -7,11 +7,11 @@ import verifyRefresh from "../middleware/verifyRefresh.middleware.js";
 const router = express.Router();
 
 // Auth routers
-router.post('/users', registerUser);
+router.post('/', registerUser);
 router.post('/login', loginUser);
 
 // secure routes
 router.post('/logout', verifyAccess, logoutUser);
-router.post('/refresh-token',verifyRefresh, rotateToken)
+router.post('/refresh-token',verifyRefresh, rotateToken) 
 
 export default router;
