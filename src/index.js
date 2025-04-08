@@ -13,6 +13,7 @@ app.listen(process.env.PORT || 8000, async()=>{
         await connectDB()
         console.log(`✅ Server is running on port ${process.env.PORT || 8000}`);
     } catch (error){
-        console.error(`❌ Failed to start server: ${error.message}`);
+        console.error(`Error Name: ${error.name}`);
+        console.error(`Error message: ${error.message}`);
     }
 })

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add Employee</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .form-container {
+      background: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .form-container h2 {
+      margin-bottom: 1rem;
+      text-align: center;
+      color: #333;
+    }
+
+    form input,
+    form select {
+      width: 100%;
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      border: 1px solid #ccc;
+      border-radius: 0.5rem;
+    }
+
+    form button {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      margin-top: 1rem;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    form button:hover {
+      background-color: #0056b3;
+    }
+
+    form p {
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    form a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    form a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Add Employee</h2>
+    <form id="employeeForm">
+      <input type="text" name="employeeId" placeholder="Employee ID" required />
+      <input type="text" name="name" placeholder="Full Name" required />
+      <input type="email" name="email" placeholder="Email" required />
+      <input type="tel" name="phone" placeholder="Phone Number" required />
+      <input type="text" name="department" placeholder="Department" required />
+      <input type="text" name="position" placeholder="Position" required />
+      <input type="date" name="joiningDate" placeholder="YYYY-MM-DD" required pattern="\d{4}-\d{2}-\d{2}" />
+      <button type="submit">➕ Add Employee</button>
+    </form>
+  </div>
+<!--
+  <script>
+    const form = document.getElementById('employeeForm');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+
+      try {
+        const res = await fetch("http://localhost:3000/employees", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
+        });
+
+        const json = await res.json();
+        alert(json.message || "Employee added!");
+        form.reset();
+      } catch (err) {
+        console.error(err);
+        alert("Something went wrong…");
+      }
+    });
+  </script> -->
+</body>
+</html>

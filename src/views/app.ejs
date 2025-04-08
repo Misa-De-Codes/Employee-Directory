@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee Directory</title>
+  <link rel="stylesheet" href="/styles/employee-list.css">
+</head>
+<style>
+    * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+  background: #f0f2f5;
+  padding: 2rem;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+/* Search and Filter */
+.search-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.search-filter input,
+.search-filter select {
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #ccc;
+  flex: 1;
+  min-width: 150px;
+}
+
+.search-filter button {
+  padding: 0.75rem 1.5rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.search-filter button:hover {
+  background-color: #0056b3;
+}
+
+/* Employee Cards */
+.employee-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.employee-card {
+  background-color: #f9f9f9;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.employee-card h3 {
+  margin-bottom: 0.5rem;
+  color: #007bff;
+}
+
+.employee-card p {
+  margin-bottom: 0.25rem;
+  color: #333;
+}
+
+</style>
+<body>
+  <div class="container">
+    <h2>Employee Directory</h2>
+
+    <!-- Search & Filter -->
+    <div class="search-filter">
+      <input type="text" id="searchInput" placeholder="Search by name, email, or department">
+      <select id="filterDepartment">
+        <option value="">All Departments</option>
+        <option value="HR">HR</option>
+        <option value="IT">IT</option>
+        <option value="Finance">Finance</option>
+        <!-- Add more as needed -->
+      </select>
+      <select id="filterRole">
+        <option value="">All Roles</option>
+        <option value="Manager">Manager</option>
+        <option value="Engineer">Engineer</option>
+        <option value="Intern">Intern</option>
+        <!-- Add more as needed -->
+      </select>
+
+      <% if (user && user.role === 'admin') { %>
+        <button onclick="window.location.href='/employees/add'">+ Add Employee</button>
+      <% } %>
+    </div>
+
+    <!-- Employee List -->
+    <div class="employee-list">
+      <% employees.forEach(emp => { %>
+        <div class="employee-card">
+          <h3><%= emp.name %></h3>
+          <p>Email: <%= emp.email %></p>
+          <p>Department: <%= emp.department %></p>
+          <p>Position: <%= emp.position %></p>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+  <script src="/scripts/employee-list.js"></script>
+</body>
+</html>
