@@ -5,15 +5,11 @@ const createEmployee = async (req, res) => {
     try {
         const { employeeID, fullName, email, phoneNumber, department, position, joiningDate } = req.body
 
-        if(req.body == {} ) {
-            return res.status(404).json({error: "Please fill the details."})
-        }
-
         // validate inputs
-        if(!employeeID || !fullName || !email || !phoneNumber || !department || !position || !joiningDate) {
+        if([employeeID, fullName, email, phoneNumber, department, position, joiningDate].some((field) => field ?.trim() === "")) {
             return res.status(400).json({ error: "All fields are required!" })
         }
-        
+
         // checking if user already exists
         const isEmployee = await Employee.findOne({
             $or: [{ email, phoneNumber }]
