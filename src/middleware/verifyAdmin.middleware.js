@@ -1,12 +1,14 @@
+import ApiError from "../utils/ApiError.js"
+
 export default function(req, res, next) {
     try {
         const role = req.user.role
         if (role === "user") {
-            return res.json({message: "Users are not allowed to create new employes."}) 
-            }
+            throw new ApiError(403, "Unauthorized access to admin route")
+        }
         next();
-
     } catch (error) {
-        return req.json({message: error.message})
+        if (error instanceof ApiError) throw error;
+        throw new ApiError(500, "Error in admin verification")
     }
 }

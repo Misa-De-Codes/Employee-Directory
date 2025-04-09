@@ -3,17 +3,16 @@ import app from "./app.js"
 import dotenv from "dotenv"
 
 dotenv.config()
-// 5500 the problem is here with this port 5500
 
-//console.log(PORT)
+const PORT = process.env.PORT || 8000
 
-// Starting the serser and connecting to the Database
-app.listen(process.env.PORT || 8000, async()=>{
+app.listen(PORT, async() => {
     try {
         await connectDB()
-        console.log(`✅ Server is running on port ${process.env.PORT || 8000}`);
+        console.log(`Server is running on port ${PORT}`);
     } catch (error){
-        console.error(`Error Name: ${error.name}`);
-        console.error(`Error message: ${error.message}`);
+        console.error("Server initialization failed:");
+        console.error(`Error: ${error.message}`);
+        process.exit(1);
     }
 })

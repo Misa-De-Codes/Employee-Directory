@@ -1,4 +1,6 @@
 import { Employee } from "../models/employee.model.js"
+import ApiError from "../utils/ApiError.js"
+import ApiResponse from "../utils/ApiResponse.js"
 
 // Create a new employee
 const createEmployee = async (req, res) => {
@@ -6,8 +8,8 @@ const createEmployee = async (req, res) => {
         const { employeeID, fullName, email, phoneNumber, department, position, joiningDate } = req.body
 
         // validate inputs
-        if([employeeID, fullName, email, phoneNumber, department, position, joiningDate].some((field) => field ?.trim() === "")) {
-            return res.status(400).json({ error: "All fields are required!" })
+        if([employeeID, fullName, email, phoneNumber, department, position, joiningDate].some((field) => field?.trim() === "")) {
+            throw new ApiError(400, "All fields are required!")
         }
 
         // checking if user already exists
@@ -15,39 +17,39 @@ const createEmployee = async (req, res) => {
             $or: [{ email, phoneNumber }]
         })
         if (isEmployee) {
-            return res.status(409).json({error: "Employee already exists!"})
+            throw new ApiError(409, "Employee already exists!")
         }
 
-        // Creating new user
-        await Employee.create({
-            employeeID: employeeID,
-            fullName: fullName,
-            email: email,
-            phoneNumber: phoneNumber,
-            department: department,
-            position: position,
-            joiningDate: joiningDate
-          });
+        // Creating new employee
+        const employee = await Employee.create({
+            employeeID,
+            fullName,
+            email,
+            phoneNumber,
+            department,
+            position,
+            joiningDate
+        });
 
-        return res.send('New Employee added.')
+        return res.status(201).json(
+            new ApiResponse(201, "Employee created successfully", employee)
+        )
         
     } catch (error) {
-        console.error("name:", error.name);
-        console.error("message:", error.message);
-        res.status(500).json({ message: "Server error while creating employee." });
+        if (error instanceof ApiError) throw error;
+        throw new ApiError(500, "Server error while creating employee")
     }
 };
 
 // Get all employees
 const getAllEmployees = async (req, res) => {
     try {
-        const employees = await Employee.find({}) 
-
-        res.status(202).json({ message: "these are the employes", data: employees })
-
+        const employees = await Employee.find({})
+        return res.status(200).json(
+            new ApiResponse(200, "Employees retrieved successfully", employees)
+        )
     } catch (error) {
-        console.error(error.message, "name: ", error.name);
-        res.status(500).json({ message: "Server error while retrieving employees." });
+        throw new ApiError(500, "Server error while retrieving employees")
     }
 };
 
@@ -57,30 +59,50 @@ const getEmployeeById = async (req, res) => {
         const id = parseInt(req.params.id);
 
         if (!id) {
-            return res.status(400).json({ error: "Employee ID is required" });
+            throw new ApiError(400, "Employee ID is required")
         }
 
         const employee = await Employee.findOne({ employeeID: id });
         
         if (!employee) {
-            return res.status(404).json({ error: "Employee not found" });
+            throw new ApiError(404, "Employee not found")
         }
 
-        res.status(200).json({ message: "Employee found", data: employee });
+        return res.status(200).json(
+            new ApiResponse(200, "Employee retrieved successfully", employee)
+        )
     } catch (error) {
-        console.error("Error name: ", error.name);
-        console.error("Error message: ", error.message);
-        res.status(500).json({ message: "Server error while retrieving employee." });
+        if (error instanceof ApiError) throw error;
+        throw new ApiError(500, "Server error while retrieving employee")
     }
 };
 
 // Update an employee
 const updateEmployee = async (req, res) => {
     try {
-        // TODO: Add logic to update employee details
+        const id = parseInt(req.params.id);
+        const updateData = req.body;
+
+        if (!id) {
+            throw new ApiError(400, "Employee ID is required")
+        }
+
+        const employee = await Employee.findOneAndUpdate(
+            { employeeID: id },
+            updateData,
+            { new: true }
+        );
+
+        if (!employee) {
+            throw new ApiError(404, "Employee not found")
+        }
+
+        return res.status(200).json(
+            new ApiResponse(200, "Employee updated successfully", employee)
+        )
     } catch (error) {
-        console.error("❌ Error in updateEmployee:", error.message);
-        res.status(500).json({ message: "Server error while updating employee." });
+        if (error instanceof ApiError) throw error;
+        throw new ApiError(500, "Server error while updating employee")
     }
 };
 
@@ -90,30 +112,43 @@ const deleteEmployee = async (req, res) => {
         const id = parseInt(req.params.id);
 
         if (!id) {
-            return res.status(400).json({ error: "Employee ID is required" });
+            throw new ApiError(400, "Employee ID is required")
         }
 
-        const employee = await Employee.deleteOne({ employeeID: id });
+        const result = await Employee.deleteOne({ employeeID: id });
         
-        if (employee.deletedCount === 0) {
-            return res.status(404).json({ error: "Unable to remove Employee!", data: employee});
+        if (result.deletedCount === 0) {
+            throw new ApiError(404, "Employee not found")
         }
 
-        res.status(200).json({ message: "Employee removed.", data: employee });
+        return res.status(200).json(
+            new ApiResponse(200, "Employee deleted successfully", result)
+        )
     } catch (error) {
-        console.error("❌ Error in deleteEmployee:", error.message);
-        res.status(500).json({ message: "Server error while deleting employee." });
+        if (error instanceof ApiError) throw error;
+        throw new ApiError(500, "Server error while deleting employee")
     }
 };
 
-// Export an employee
+// Export employee data
 const exportEmployee = async (req, res) => {
     try {
-        // TODO: Add logic to export employee data (e.g., to a CSV or Excel file)
+        const employees = await Employee.find({});
+        // TODO: Add export logic here
+        
+        return res.status(200).json(
+            new ApiResponse(200, "Employee data exported successfully", employees)
+        )
     } catch (error) {
-        console.error("❌ Error in exportEmployee:", error.message);
-        res.status(500).json({ message: "Server error while exporting employee data." });
+        throw new ApiError(500, "Server error while exporting employee data")
     }
 };
 
-export { createEmployee, getAllEmployees, getEmployeeById, updateEmployee, deleteEmployee, exportEmployee }
+export { 
+    createEmployee, 
+    getAllEmployees, 
+    getEmployeeById, 
+    updateEmployee, 
+    deleteEmployee, 
+    exportEmployee 
+}
