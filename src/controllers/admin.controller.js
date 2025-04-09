@@ -54,14 +54,22 @@ const getAllEmployees = async (req, res) => {
 // Get a specific employee by ID
 const getEmployeeById = async (req, res) => {
     try {
-        const employees = await Employee.find({}) 
+        const id = parseInt(req.params.id);
 
-        res.status(200).json({ message: "these are the employes", data: employees })
+        if (!id) {
+            return res.status(400).json({ error: "Employee ID is required" });
+        }
 
+        const employee = await Employee.findOne({ employeeID: id });
+        
+        if (!employee) {
+            return res.status(404).json({ error: "Employee not found" });
+        }
 
-        // TODO: Add logic to fetch one employee by ID
+        res.status(200).json({ message: "Employee found", data: employee });
     } catch (error) {
-        console.error("❌ Error in getEmployeeById:", error.message);
+        console.error("Error name: ", error.name);
+        console.error("Error message: ", error.message);
         res.status(500).json({ message: "Server error while retrieving employee." });
     }
 };
@@ -79,7 +87,19 @@ const updateEmployee = async (req, res) => {
 // Delete an employee
 const deleteEmployee = async (req, res) => {
     try {
-        // TODO: Add logic to delete an employee
+        const id = parseInt(req.params.id);
+
+        if (!id) {
+            return res.status(400).json({ error: "Employee ID is required" });
+        }
+
+        const employee = await Employee.deleteOne({ employeeID: id });
+        
+        if (employee.deletedCount === 0) {
+            return res.status(404).json({ error: "Unable to remove Employee!", data: employee});
+        }
+
+        res.status(200).json({ message: "Employee removed.", data: employee });
     } catch (error) {
         console.error("❌ Error in deleteEmployee:", error.message);
         res.status(500).json({ message: "Server error while deleting employee." });

@@ -27,7 +27,7 @@ const generateTokens = async function(_id){
 
 // Registration Controler
 const registerUser = async function(req, res) {
-    try{console.log("register controller")
+    try{
         const { fullName, email, password } = req.body
 
         // validate inputs
@@ -71,7 +71,7 @@ const registerUser = async function(req, res) {
 
 // Login Controller
 const loginUser = async function(req, res) {
-    try{console.log("login controller")
+    try{
         const { email, password } = req.body
 
         // Checking user cradintials

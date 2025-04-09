@@ -1,8 +1,8 @@
 export default function(req, res, next) {
     try {
         const role = req.user.role
-        if (role === "admin") {
-            return res.json({message: "user"}) 
+        if (role === "user") {
+            return res.json({message: "Users are not allowed to create new employes."}) 
             }
         next();
 
