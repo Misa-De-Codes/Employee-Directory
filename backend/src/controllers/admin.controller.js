@@ -1,6 +1,7 @@
 import { Employee } from "../models/employee.model.js"
 import ApiError from "../utils/ApiError.js"
 import ApiResponse from "../utils/ApiResponse.js"
+import {Parser} from "json2csv"
 
 // Create a new employee
 const createEmployee = async (req, res, next) => {
@@ -158,14 +159,30 @@ const deleteEmployee = async (req, res, next) => {
 // Export employee data
 const exportEmployee = async (req, res) => {
     try {
-        const employees = await Employee.find({});
-        // TODO: Add export logic here
+        const employees = await Employee.find({}).lean();
+
+        if(!employees || employees.length === 0) {
+            return res.status(404).json(
+                new ApiResponse(404, "No employees found to export")
+            )
+        }
+
+        // Formating data from json to csv formate
+        const filteredEmployees = employees.map(({_id, __v, ...rest}) => rest)
+        const fields = ['employeeID', 'fullName', 'email', 'phoneNumber', 'department', 'position', 'joiningDate'];
+        const parseObject = new Parser({fields})
+        const csv = parseObject.parse(filteredEmployees)
+
+        // Set response headers for file download
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', 'attachment; filename=employees.csv');
         
-        return res.status(200).json(
-            new ApiResponse(200, "Employee data exported successfully", employees)
-        )
+        // Send the CSV data as a downloadable file
+        return res.status(200).send(csv);
+
     } catch (error) {
-        throw new ApiError(500, "Server error while exporting employee data")
+        console.log(error.name, error.message)
+        throw error instanceof ApiError ? error : new ApiError(500, "Server error while exporting employee data")
     }
 };
 
