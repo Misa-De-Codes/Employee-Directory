@@ -20,10 +20,13 @@ app.use(cookieParser())
 // Routers Import
 import authRouter from "./routers/auth.routes.js"
 import adminRouter from "./routers/admin.routes.js"
+import forntendRouter from "./routers/frontend.routes.js"
 
 // Routers Declear
-app.use('/users', authRouter)
-app.use('/employees', adminRouter)
+app.use('/api/users', authRouter)
+app.use('/api/employees', adminRouter)
+// frontend pages
+app.use('/users', forntendRouter)
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -36,13 +39,6 @@ app.use((err, req, res, next) => {
     
     return res.status(500).json(
         new ApiResponse(500, "Internal server error")
-    )
-})
-
-// 404 handler
-app.use((req, res) => {
-    return res.status(404).json(
-        new ApiResponse(404, "Route not found")
     )
 })
 
