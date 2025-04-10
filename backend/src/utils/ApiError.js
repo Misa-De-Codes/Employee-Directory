@@ -1,5 +1,3 @@
-
-
 class ApiError extends Error {
     constructor(statusCode, message){
         super(message);
@@ -7,7 +5,7 @@ class ApiError extends Error {
         this.status = 'error'
         this.success = false
 
-        Error.captureStackTrace(this, this.constractor);
+        Error.captureStackTrace(this, this.constructor);
     }
 }
 

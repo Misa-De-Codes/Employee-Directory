@@ -8,7 +8,7 @@ const createEmployee = async (req, res) => {
         const { employeeID, fullName, email, phoneNumber, department, position, joiningDate } = req.body
 
         // validate inputs
-        if([employeeID, fullName, email, phoneNumber, department, position, joiningDate].some((field) => field?.trim() === "")) {
+        if([employeeID, fullName, email, phoneNumber, department, position].some((field) => field?.trim() === "") || !joiningDate) {
             throw new ApiError(400, "All fields are required!")
         }
 
