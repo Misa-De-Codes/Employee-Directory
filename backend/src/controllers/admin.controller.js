@@ -3,24 +3,22 @@ import ApiError from "../utils/ApiError.js"
 import ApiResponse from "../utils/ApiResponse.js"
 
 // Create a new employee
-const createEmployee = async (req, res) => {
+const createEmployee = async (req, res, next) => {
     try {
-        const { employeeID, fullName, email, phoneNumber, department, position, joiningDate } = req.body
+        const { employeeID, fullName, email, phoneNumber, department, position, joiningDate } = req.body;
 
-        // validate inputs
-        if([employeeID, fullName, email, phoneNumber, department, position].some((field) => field?.trim() === "") || !joiningDate) {
-            throw new ApiError(400, "All fields are required!")
+        if ([employeeID, fullName, email, phoneNumber, department, position].some(field => !field?.trim()) || !joiningDate) {
+            return next(new ApiError(400, "All fields are required!"));
         }
 
-        // checking if user already exists
         const isEmployee = await Employee.findOne({
-            $or: [{ email, phoneNumber }]
-        })
+            $or: [{ email }, { phoneNumber }]
+        });
+
         if (isEmployee) {
-            throw new ApiError(409, "Employee already exists!")
+            return next(new ApiError(409, "Employee already exists!"));
         }
 
-        // Creating new employee
         const employee = await Employee.create({
             employeeID,
             fullName,
@@ -33,100 +31,127 @@ const createEmployee = async (req, res) => {
 
         return res.status(201).json(
             new ApiResponse(201, "Employee created successfully", employee)
-        )
-        
+        );
     } catch (error) {
-        if (error instanceof ApiError) throw error;
-        throw new ApiError(500, "Server error while creating employee")
+        console.error("Error creating employee:", error); 
+        next(
+            error instanceof ApiError
+                ? error
+                : new ApiError(500, "Server error while creating employee")
+        );
     }
 };
 
 // Get all employees
-const getAllEmployees = async (req, res) => {
+const getAllEmployees = async (req, res, next) => {
     try {
-        const employees = await Employee.find({})
+        const employees = await Employee.find().lean();
+
+        if (!employees.length) {
+            return res.status(404).json(
+                new ApiResponse(404, "No employees found", [])
+            );
+        }
+
         return res.status(200).json(
             new ApiResponse(200, "Employees retrieved successfully", employees)
-        )
+        );
     } catch (error) {
-        throw new ApiError(500, "Server error while retrieving employees")
+        console.error("Error retrieving employees:", error); 
+        next(new ApiError(500, "Server error while retrieving employees"));
     }
 };
 
 // Get a specific employee by ID
-const getEmployeeById = async (req, res) => {
+const getEmployeeById = async (req, res, next) => {
     try {
-        const id = parseInt(req.params.id);
+        const id = parseInt(req.params.id, 10);
 
-        if (!id) {
-            throw new ApiError(400, "Employee ID is required")
+        if (isNaN(id)) {
+            return next(new ApiError(400, "A valid numeric Employee ID is required"));
         }
 
-        const employee = await Employee.findOne({ employeeID: id });
-        
+        const employee = await Employee.findOne({ employeeID: id }).lean();
+
         if (!employee) {
-            throw new ApiError(404, "Employee not found")
+            return next(new ApiError(404, "Employee not found"));
         }
 
         return res.status(200).json(
             new ApiResponse(200, "Employee retrieved successfully", employee)
-        )
+        );
     } catch (error) {
-        if (error instanceof ApiError) throw error;
-        throw new ApiError(500, "Server error while retrieving employee")
+        console.error("Error fetching employee by ID:", error); 
+        next(
+            error instanceof ApiError
+                ? error
+                : new ApiError(500, "Server error while retrieving employee")
+        );
     }
 };
 
 // Update an employee
-const updateEmployee = async (req, res) => {
+const updateEmployee = async (req, res, next) => {
     try {
-        const id = parseInt(req.params.id);
+        const id = parseInt(req.params.id, 10);
         const updateData = req.body;
 
-        if (!id) {
-            throw new ApiError(400, "Employee ID is required")
+        if (isNaN(id)) {
+            return next(new ApiError(400, "A valid numeric Employee ID is required"));
         }
 
-        const employee = await Employee.findOneAndUpdate(
+        if (!updateData || Object.keys(updateData).length === 0) {
+            return next(new ApiError(400, "Update data is required"));
+        }
+
+        const updatedEmployee = await Employee.findOneAndUpdate(
             { employeeID: id },
             updateData,
-            { new: true }
-        );
+            { new: true, runValidators: true }
+        ).lean();
 
-        if (!employee) {
-            throw new ApiError(404, "Employee not found")
+        if (!updatedEmployee) {
+            return next(new ApiError(404, "Employee not found"));
         }
 
         return res.status(200).json(
-            new ApiResponse(200, "Employee updated successfully", employee)
-        )
+            new ApiResponse(200, "Employee updated successfully", updatedEmployee)
+        );
     } catch (error) {
-        if (error instanceof ApiError) throw error;
-        throw new ApiError(500, "Server error while updating employee")
+        console.error("Error updating employee:", error); 
+        next(
+            error instanceof ApiError
+                ? error
+                : new ApiError(500, "Server error while updating employee")
+        );
     }
 };
 
 // Delete an employee
-const deleteEmployee = async (req, res) => {
+const deleteEmployee = async (req, res, next) => {
     try {
-        const id = parseInt(req.params.id);
+        const id = parseInt(req.params.id, 10);
 
-        if (!id) {
-            throw new ApiError(400, "Employee ID is required")
+        if (isNaN(id)) {
+            return next(new ApiError(400, "A valid numeric Employee ID is required"));
         }
 
         const result = await Employee.deleteOne({ employeeID: id });
-        
+
         if (result.deletedCount === 0) {
-            throw new ApiError(404, "Employee not found")
+            return next(new ApiError(404, "Employee not found"));
         }
 
         return res.status(200).json(
             new ApiResponse(200, "Employee deleted successfully", result)
-        )
+        );
     } catch (error) {
-        if (error instanceof ApiError) throw error;
-        throw new ApiError(500, "Server error while deleting employee")
+        console.error("Error deleting employee:", error);
+        next(
+            error instanceof ApiError
+                ? error
+                : new ApiError(500, "Server error while deleting employee")
+        );
     }
 };
 
