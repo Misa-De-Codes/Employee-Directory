@@ -5,15 +5,15 @@ import verifyAdmin from "../middleware/verifyAdmin.middleware.js";
 
 const router = express.Router()
 
-// damn I i finallly needed this to move to the top
-router.get('/export', exportEmployee)
+// I finallly needed this to move to the top to avoid route overwriting
+router.get('/export', exportEmployee)  //fine
 
 //  CRUD Operations for both Admin & Employees
 router.get('/', verifyAccess , getAllEmployees)   //fine
 router.get('/:id', verifyAccess, getEmployeeById)   //fine
 
 //  Admin Operations
-router.post('/', verifyAccess, verifyAdmin, createEmployee) //fine  
+router.post('/', verifyAccess, verifyAdmin, createEmployee)  //fine  
 router.put('/:id', verifyAccess, verifyAdmin, updateEmployee)  //fine
 router.delete('/:id', verifyAccess, verifyAdmin, deleteEmployee)  //fine
   
