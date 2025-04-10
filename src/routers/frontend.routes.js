@@ -21,6 +21,12 @@ router.get('/login', (req, res, next) => {
     })
 })
 
+router.get('/dashboard', (req, res, next) => {
+    res.sendFile(path.join(staticPath, 'pages', 'dashboard.html'), err => {
+        if (err) next(err)
+    })
+})
+
 // Handle 404 for frontend routes
 router.use((req, res) => {
     res.status(404).sendFile(path.join(staticPath, 'pages', '404.html'))
