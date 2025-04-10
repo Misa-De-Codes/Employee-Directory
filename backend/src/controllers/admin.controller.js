@@ -7,7 +7,7 @@ const createEmployee = async (req, res, next) => {
     try {
         const { employeeID, fullName, email, phoneNumber, department, position, joiningDate } = req.body;
 
-        if ([employeeID, fullName, email, phoneNumber, department, position].some(field => !field?.trim()) || !joiningDate) {
+        if (!employeeID || !joiningDate || [fullName, email, phoneNumber, department, position].some((field) => field?.trim() === "")) {
             return next(new ApiError(400, "All fields are required!"));
         }
 
@@ -33,7 +33,7 @@ const createEmployee = async (req, res, next) => {
             new ApiResponse(201, "Employee created successfully", employee)
         );
     } catch (error) {
-        console.error("Error creating employee:", error); 
+        console.error("Error creating employee:", error.message); 
         next(
             error instanceof ApiError
                 ? error
