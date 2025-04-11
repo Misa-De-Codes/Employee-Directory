@@ -6,7 +6,7 @@ import verifyAdmin from "../middleware/verifyAdmin.middleware.js";
 const router = express.Router()
 
 // I finallly needed this to move to the top to avoid route overwriting
-router.get('/export', exportEmployee)  //fine
+router.get('/export', verifyAccess, verifyAdmin, exportEmployee)  //fine
 
 //  CRUD Operations for both Admin & Employees
 router.get('/', verifyAccess , getAllEmployees)   //fine

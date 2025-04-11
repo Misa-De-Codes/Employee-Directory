@@ -53,7 +53,7 @@ The application uses a `.env` file to manage sensitive information. Below are th
 3. **POST `/`**: Create a new employee (requires admin privileges).
 4. **PUT `/:id`**: Update an employee's details by ID (requires admin privileges).
 5. **DELETE `/:id`**: Delete an employee by ID (requires admin privileges).
-6. **GET `/export`**: Export all employee data to a CSV file.
+6. **GET `/export`**: Export all employee data to a CSV file (requires admin privileges).
 
 ### Frontend Routes (`/users`)
 1. **GET `/signup`**: Serve the signup page (static file).
