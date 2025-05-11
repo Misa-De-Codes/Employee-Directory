@@ -20,7 +20,10 @@
     "json2csv": "^6.0.0-alpha.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.13.1",
-    "nodemon": "^3.1.9",
-    "npm": "^11.3.0"
+    "npm": "^11.3.0",
+    "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
   }
 }

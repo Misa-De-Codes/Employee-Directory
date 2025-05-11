@@ -1,9 +1,10 @@
-import express, { json, urlencoded } from "express"
-import cors from "cors"
-import cookieParser from "cookie-parser"
-import path from "path"
-import ApiError from "./utils/ApiError.js"
-import ApiResponse from "./utils/ApiResponse.js"
+import express, { json, urlencoded } from "express";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import path from "path";
+import ApiError from "./utils/ApiError.js";
+import ApiResponse from "./utils/ApiResponse.js";
+import logger from "./utils/logger.js";
 
 const app = express()
 
@@ -16,6 +17,11 @@ app.use(cors({
     methods: ["POST", "GET", "PUT", "DELETE"]
 }))
 app.use(cookieParser())
+// Logger
+app.use((req, res, next) => {
+    logger(req)
+    next()
+})
 
 // Routers Import
 import authRouter from "./routers/auth.routes.js"
