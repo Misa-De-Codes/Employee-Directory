@@ -1,7 +1,3 @@
-# Employee Directory Backend
-
----
-
 ## Overview
 The **Employee Directory** backend is a Node.js application built using the Express framework. It provides a RESTful API for managing employees and user authentication. The backend is designed to handle CRUD operations for employees, user authentication, and token-based authorization. It also includes middleware for error handling and access control.
 
