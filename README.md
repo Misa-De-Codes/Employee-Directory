@@ -1,8 +1,5 @@
 # Employee Directory Backend
 
-## Apology
-First and foremost, I would like to apologize for not implementing the frontend for this project. As a college dropout currently focusing on backend development, I am still in the process of learning frontend technologies. This project is a demonstration of my backend development skills, and I hope it showcases my understanding of server-side programming, API design, and database integration.
-
 ---
 
 ## Overview
