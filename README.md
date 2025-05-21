@@ -76,8 +76,3 @@ The application uses a centralized error-handling middleware. Custom errors are 
 - Enhance the error-handling mechanism with more detailed logs.
 - Add role-based access control for more granular permissions.
 
----
-
-## Note
-This project is a work in progress and is intended for learning purposes. I initially tried to create the frontend using AI tools, but I felt guilty about relying too much on them, so I decided not to include it. For the backend, I used AI sparingly (about 5%) to understand some errors and clean up unnecessary comments and `console.log` lines, also writing this README. Feedback and suggestions are always welcome!
-
